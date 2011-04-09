@@ -116,9 +116,10 @@
   * 5. [NOT REQUIRED] Facebook Session Change Subscription on API BOOT
   * 6. [DONE] Event Queue Model[NOT required] OR Async Model for parallel graph API calls[IMPLEMENTED]
   * 7. [DONE] Installation time redirection to ask for permission, using JS.
-  * 
+  * 8. [DONE] Open extended permission requests in Iframes instead of browser popups.
+  * 9. [DONE] Send Application Request. f.sendAppRequest( params, callback );
+  *
   */
-  
 fQuery  = function(selector){
   return new _fQuery(selector);
 }
@@ -257,15 +258,21 @@ fQuery.grantPermissions = function(perms, callback){
     if(!reqdPerms)
       callback(1);  // All permissions already granted. No need to ask for permissions
     else{ 
-      //There are some permissions needed to be granted by the user. hence, call FB.login with extended permissions
       reqdPerms = reqdPerms.substr(1,reqdPerms.length-1);
-      FB.login(function(response){
+
+        //There are some permissions needed to be granted by the user. hence, call FB.ui with extended permissions
+      FB.ui({
+        method: 'permissions.request',
+        perms: reqdPerms
+      },
+      function(response) {
         if(response.perms || !reqdPerms){
           callback(1);
         } else  {
           callback(0);
         }
-      }, {perms: reqdPerms});
+      });
+
     }
   });
 }
@@ -574,6 +581,54 @@ _fQuery.videos = function(){
 
   return _fQuery;
 }
+
+/**
+  * @func sendAppRequest
+  * @desc Opens a Iframe Popup to Send Application Requests to user's friends.
+  *
+  * @params: params (A JSON Object)
+  *   It has three parameters:
+  *     1.  title: Optional, the title for the friend selector dialog. Maximum length is 50 characters.
+  *     2.  message:  The request the receiving user will see. It appears as a question posed by the sending user. The maximum length is 255 characters.
+  *     3.  data: Optional, additional data you may pass for tracking. This will be stored as part of the request objects created.
+  *
+  * @params: callback (A Callback Function)
+  *   Callback function will be called with following Return Data:
+  *     1.  request_ids:  A comma-separated list of the request_ids that were created. To learn who the requests were sent to, you should loop through the information for each request object identified by a request id.
+  *
+  */
+fQuery.sendAppRequest  = function( params, callback ){
+  if(!params.message) params.message = '';
+  if(!params.data) params.data = '';
+
+  FB.ui({
+    method: 'apprequests',
+    message: params.message,
+    data: params.data,
+    title: params.title
+  }, function(response){
+    console.dir(response)
+  })
+
+  return null;
+}
+
+/*
+fQuery.deposit  = function( params, callback ){
+  FB.ui({
+    method: 'pay',
+    display: 'iframe',
+    app_id: fQuery.defaults.appId,
+    redirect_uri: params.redirectUri,
+    credits_purchase: params.creditsPurchase,
+    order_info: params.orderInfo,
+    dev_purchase_params: params.devPurchaseParams
+  },
+  function(response){
+    callback(response)
+  })
+}
+*/
 
 /**
   * @func exec
