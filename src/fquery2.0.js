@@ -112,7 +112,7 @@
   * 1. [DONE] FQL Support. f.exec(query,callback);
   * 2. [DONE] .afterBoot(callback) -- should be recursive to check in intervals.
   * 3. [DONE] MULTIPLE FQL query support. f.exec(queries obj, callback);
-  * 4. [PENDING] Ask FB permissions only when they are required
+  * 4. [DONE] Ask FB permissions only when they are required
   * 5. [NOT REQUIRED] Facebook Session Change Subscription on API BOOT
   * 6. [DONE] Event Queue Model[NOT required] OR Async Model for parallel graph API calls[IMPLEMENTED]
   * 7. [DONE] Installation time redirection to ask for permission, using JS.
@@ -120,10 +120,19 @@
   * 9. [DONE] Send Application Request. f.sendAppRequest( params, callback );
   *
   */
+
+/**
+ * Override console.log if firebug is not enabled. Will cause errors in Firefox if console is null
+ */
+if (typeof console == "undefined") {
+    window.console = {
+        log: function () {}
+    };
+}
+
 fQuery  = function(selector){
   return new _fQuery(selector);
 }
-
 /** Variables **/
 fQuery.defaults = { 
   locale : 'en_US',
@@ -131,7 +140,8 @@ fQuery.defaults = {
   status: true, 
   cookie: true, 
   xfbml: true,
-  perms: ''
+  perms: '',
+  type: 'app'
 }
 
 /** FB session object **/
@@ -171,7 +181,6 @@ fQuery.init  = function( params ){
   */
 fQuery.boot = function(){
   console.log('Booting FB API...');
-
   FB.init({
     appId: fQuery.defaults.appId, 
     status: fQuery.defaults.status, 
@@ -180,19 +189,24 @@ fQuery.boot = function(){
     channelUrl: fQuery.defaults.channelUrl
   });
 
-  FB.getLoginStatus(function(response){
-    if(!response.session){
-      var redirectUrl = encodeURIComponent(fQuery.defaults.redirectUrl);
-      var loginUrl = 'https://www.facebook.com/dialog/oauth?client_id='+ fQuery.defaults.appId +'&redirect_uri='+ redirectUrl;
-      if(fQuery.defaults.perms) loginUrl += "&scope="+jQuery.defaults.perms;
-      top.location.href = loginUrl;
-    }
-    else{
-      fQuery.session = FB.getSession();
-      fQuery.isBoot = true;
-    }
+  if(fQuery.defaults.type == 'app'){
+    FB.getLoginStatus(function(response){
+      if(!response.session){
+        var redirectUrl = encodeURIComponent(fQuery.defaults.redirectUrl);
+        var loginUrl = 'https://www.facebook.com/dialog/oauth?client_id='+ fQuery.defaults.appId +'&redirect_uri='+ redirectUrl;
+        if(fQuery.defaults.perms) loginUrl += "&scope="+fQuery.defaults.perms;
+        top.location.href = loginUrl;
+      }
+      else{
+        fQuery.session = FB.getSession();
+        fQuery.isBoot = true;
+      }
+      console.log('Finished booting FB API.');
+    });
+  } else  {
+    fQuery.isBoot = true;
     console.log('Finished booting FB API.');
-  });
+  }
 
   return fQuery;
 }
