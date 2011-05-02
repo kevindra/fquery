@@ -1,120 +1,122 @@
-  
-  fquery.js
 
-  v2.0.0
-  
-  Very Easy and Flexible Facebook Features Access API, You can user it like jQuery.
-  
-  @author Kevindra Singh
-  
-  No dependencies.
-  
-  Installation:
-  
-  Step 1: Loading Fquery
-  
-  Load the script in the head section of your HTML page:
-  
-      <script type='text/javascript' src='fquery2.0.js'></script>
-  
-  Step 2: FB Initialization
-  
-  Initialize fQuery API, on document load: invoke this code:
-  
-  then, add following code snippet inside <BODY> tags.
-  
-  <!-- FB Initialization -->
-  <div id="fb-root"></div>
-  <script>
-    (function() {
-      var e = document.createElement('script'); e.async = true;
-      e.src = document.location.protocol +
-        '//connect.facebook.net/en_US/all.js';
-      document.getElementById('fb-root').appendChild(e);
-  
-      f.init({
-        appId: '< YOUR APP ID >',
-        channelUrl: '<Channel File URL>',
-        redirectUrl:  '<YOUR APP URL>',
-        perms: '< Facebook APP permissions to ASK (optional)>'
-      })
-    }());
-  </script>
-  <!-- FB Initialization ends -->
-  
-  
-  Step 3: Boot the FB API. In your HTML <BODY> tag add following code:
-  
-  <script> 
-    window.fbAsyncInit = function() {
-      f.boot();
-    }
-  </script>
-  
-  Now, you are cool to go ahead !!!!
-  
-  
-  Usage examples:
-  
-  1. Extracts user's basic info:
-  
-  f('kevindra.singh').exec(function(response){
-    //Play with response here.
-    console.dir(response);
-  }); 
-  
-  2. Extracts user's friend list:
-  
-  f('kevindra.singh').friends().exec(function(response){
-    console.dir(response);
-  });
-  
-  3. Get the Albums:
-  
-  f('kevindra.singh).albums().exec(function(albums){
-    //albums.
-  });
-  
-  4.Get the photos from an album:
-  
-  //If you know the album ID, you can also invoke it like this
-  f('kevindra.singh').albums('<album id>').photos().exec(function(album){
-    //album
-  });
-  
-  OR you can skip the user part as every object has unique IDs
-  
-  f('<album id>').photos().exec(function(album){
-    //album
-  });
-  
-  5. Post on User's wall
-  
-  f('user').wall().push({
-      message: 'Hi I am FQuery.', 
-      description: 'Author: Kevindra Singh.'
-    }, 
-    function(response){ 
-      console.dir(response); 
-    }
-  );
-  
-  References:
-  for popup http://nyromodal.nyrodev.com/
-  
-  Changes History
-  
-  v1.0: 
-    Graph API support for 'user'
-    Graph API write_stream support f('user').wall().push(...)
-  
-  @todo for v2.1.0 (requirements)
-  
-  1. [DONE] FQL Support. f.exec(query,callback);
-  2. [DONE] .afterBoot(callback) -- should be recursive to check in intervals.
-  3. [DONE] MULTIPLE FQL query support. f.exec(queries obj, callback);
-  4. [PENDING] Ask FB permissions only when they are required
-  5. [NOT REQUIRED] Facebook Session Change Subscription on API BOOT
-  6. [DONE] Event Queue Model[NOT required] OR Async Model for parallel graph API calls[IMPLEMENTED]
-  7. [DONE] Installation time redirection to ask for permission, using JS.
-  
+ fquery.js
+ v2.0.0
+
+ @desc: Very Easy and Flexible Facebook Features Access.
+ 
+ @author Kevindra Singh
+
+ No dependencies.
+ 
+ Installation:
+
+ Step 1: Loading Fquery
+
+ Load the script in the head section of your HTML page:
+
+     <script type='text/javascript' src='fquery2.0.js'></script>
+
+ Step 2: FB Initialization
+
+ Initialize fQuery API, on document load: invoke this code:
+
+ then, add following code snippet inside <BODY> tags.
+
+ <!-- FB Initialization -->
+ <div id="fb-root"></div>
+ <script>
+   (function() {
+     var e = document.createElement('script'); e.async = true;
+     e.src = document.location.protocol +
+       '//connect.facebook.net/en_US/all.js';
+     document.getElementById('fb-root').appendChild(e);
+
+     f.init({
+       appId: '< YOUR APP ID >',
+       channelUrl: '<Channel File URL>',
+       redirectUrl:  '<YOUR APP URL>',
+       perms: '< Facebook APP permissions to ASK (optional)>'
+     })
+   }());
+ </script>
+ <!-- FB Initialization ends -->
+
+
+ Step 3: Boot the FB API. In your HTML <BODY> tag add following code:
+
+ <script> 
+   window.fbAsyncInit = function() {
+     f.boot();
+   }
+ </script>
+
+ Now, you are cool to go ahead !!!!
+
+ 
+ Usage examples:
+
+ 1. Extracts user's basic info:
+ 
+ f('kevindra.singh').exec(function(response){
+   //Play with response here.
+   console.dir(response);
+ }); 
+
+ 2. Extracts user's friend list:
+
+ f('kevindra.singh').friends().exec(function(response){
+   console.dir(response);
+ });
+
+ 3. Get the Albums:
+ 
+ f('kevindra.singh).albums().exec(function(albums){
+   //albums.
+ });
+
+ 4.Get the photos from an album:
+
+ //If you know the album ID, you can also invoke it like this
+ f('kevindra.singh').albums('<album id>').photos().exec(function(album){
+   //album
+ });
+
+ OR you can skip the user part as every object has unique IDs
+ 
+ f('<album id>').photos().exec(function(album){
+   //album
+ });
+
+ 5. Post on User's wall
+ 
+ f('user').wall().push({
+     message: 'Hi I am FQuery.', 
+     description: 'Author: Kevindra Singh.'
+   }, 
+   function(response){ 
+     console.dir(response); 
+   }
+ );
+ 
+ References:
+ for popup http://nyromodal.nyrodev.com/
+
+ Changes History
+
+ v1.0: 
+   Graph API support for 'user'
+   Graph API write_stream support f('user').wall().push(...)
+ 
+ @todo for v2.0.0 (requirements)
+ 
+ 1. [DONE] FQL Support. f.exec(query,callback);
+ 2. [DONE] .afterBoot(callback) -- should be recursive to check in intervals.
+ 3. [DONE] MULTIPLE FQL query support. f.exec(queries obj, callback);
+ 4. [DONE] Ask FB permissions only when they are required
+ 5. [NOT REQUIRED] Facebook Session Change Subscription on API BOOT
+ 6. [DONE] Event Queue Model[NOT required] OR Async Model for parallel graph API calls[IMPLEMENTED]
+ 7. [DONE] Installation time redirection to ask for permission, using JS.
+ 8. [DONE] Open extended permission requests in Iframes instead of browser popups.
+ 9. [DONE] Send Application Request. f.sendAppRequest( params, callback );
+ 10.[DONE] fquery init for websites and apps seperate. In case of app, it will redirect to permission window, while in websites it will be manual (on click of login button).
+    one more parameter required in f.init => {type: 'app' or 'website'} 

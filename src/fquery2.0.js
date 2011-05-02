@@ -118,7 +118,8 @@
   * 7. [DONE] Installation time redirection to ask for permission, using JS.
   * 8. [DONE] Open extended permission requests in Iframes instead of browser popups.
   * 9. [DONE] Send Application Request. f.sendAppRequest( params, callback );
-  *
+  * 10.[DONE] fquery init for websites and apps seperate. In case of app, it will redirect to permission window, while in websites it will be manual (on click of login button).
+  *    one more parameter required in f.init => {type: 'app' or 'website'} 
   */
 
 /**
